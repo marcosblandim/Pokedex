@@ -1,0 +1,148 @@
+//POKEDEX_3.
+#include <stdio.h>
+#include <stdlib.h>
+#include <windows.h>
+#include "pokedex_ascii.h"
+#include <locale.h>
+#include <conio.h>
+#include <string.h>
+
+char scan_menu()//Inicia menu, recebe e retorna char válido (1 a 5).
+{
+    char retorno[2];
+    system("cls");
+    printf("------------------------------------POKEDEX-------------------------------------                                      MENU                                    \n\n   Olá treinador e seja bem-vindo a Pokedex!\n\n   Aqui você pode cadastrar seus novos Pokémons, consultar aquele já cadastrado e alterar ou excluir caso tenha acontecido algum engano. E tudo isso feito de\nforma simples e rápida, para que você se preocupe apenas em tornar o melhor\nmestre Pokémon!\n\nDigite:\n\n(1) CADASTRAR\n\n(2) CONSULTAR\n\n(3) ALTERAR\n\n(4) EXCLUIR\n\n(5) FECHAR\n\n--> ");
+    scanf(" %[^\n]s", retorno);
+    while(retorno[0] < '1' || retorno[0] > '5' || retorno[1] != '\0')
+    {
+        system("cls");
+        printf("------------------------------------POKEDEX-------------------------------------                                      MENU                                    \n\n  Olá, seja bem-vindo a Pokedex.\n\n  Aqui você pode cadastrar seus novos Pokémons, consultar aqueles ja cadastrados e alterar ou excluir caso algum engano aconteça. Tudo feito de forma rápida e \nsimples, para que você se preocupe apenas em tornar o melhor mestre Pokémon!\n\nDigite:\n\n(1) CADASTRAR\n\n(2) CONSULTAR\n\n(3) ALTERAR\n\n(4) EXCLUIR\n\n(5) FECHAR\n\nDígito invalido, por favor digite outro.\n\n--> ");
+        scanf(" %[^\n]s", retorno);
+    }
+    return retorno[0];
+}
+
+struct pokemon//Informações dos Pokémons.
+{
+    char nome[100];
+    char tipo[100];//15 tipos; digite de A a O.
+    char apto[4];//Sim(S) ou não(N) ou HP.
+    char poder1[100];//1/4 poderes.
+    char poder2[100];//2/4 poderes.
+    char poder3[100];//3/4 poderes.
+    char poder4[100];//4/4 poderes.
+};
+
+struct pokemon cadastro(int num)//Função que cadastra pokemon: retorna struct pokémon. Parâmetro para poder printar o número do pokémon a ser cadastrado.
+{
+    struct pokemon pok;
+    char Sim[4] = {"Sim"};//Comparar digitação de aptidão.
+    char Nao[4] = {"Nao"};//Comparar digitação de aptidão.
+    char sim[4] = {"sim"};//Comparar digitação de aptidão.
+    char nao[4] = {"nao"};//Comparar digitação de aptidão.
+    system("cls");
+    printf("--------------------------------------------------------------------------------                                   CADASTRO                                  \n\n  Aqui você digitará as informações do pokémon de número %d.\n\nDigite:\n", num);
+    printf("\nO nome do pokémon:\n --> ");
+    scanf(" %[^\n]s", pok.nome);//Coleta nome do pokémon.
+    printf("\nO tipo do pokémon; Digite:\n --> ");
+    scanf(" %[^\n]s", pok.tipo);//Coleta tipo do pokémon.
+    printf("\nEle está apto a batalhar?(Sim/Nao):\n --> ");
+    scanf(" %[^\n]s", pok.apto);//Coleta a aptidão do pokémon.
+    while(strcmp(pok.apto, sim) != 0 && strcmp(pok.apto, nao) != 0 && strcmp(pok.apto, Sim) != 0 && strcmp(pok.apto, Nao) != 0)
+    {
+        system("cls");
+        printf("--------------------------------------------------------------------------------                                   CADASTRO                                  \n\n  Aqui você digitará as informações do pokémon de número %d.\n\nDigite:\n\nO nome do pokémon:\n --> %s\n\nO tipo do pokémon:\n --> %s\n\nEle está apto a batalhar?(Sim/Nao):\n\nDigitação inválida! Por favor, digite \"Sim\" ou \"Nao\".\n --> ", num, pok.tipo, pok.nome);
+        scanf(" %[^\n]s", pok.apto);//Coleta a aptidão do pokémon.
+    }
+    system("cls");
+    //Printar as informções válidas ja inseridas pelo usuário.
+    printf("--------------------------------------------------------------------------------                                   CADASTRO                                  \n\n  Aqui você digitará as informações do pokémon de número %d.\n\nDigite:\n\nO nome do pokémon:\n --> %s\n\nO tipo do pokémon:\n --> %s\n\nEle está apto a batalhar?(Sim/Nao):\n --> %s", num, pok.tipo, pok.nome, pok.apto);
+    printf("\n\nOs poderes do pokémon:\n\nPoder 1\n --> ");//Inicia coleta de poderes.
+    scanf(" %[^\n]s", pok.poder1);//Coleta o poder 1 do pokémon.
+    printf("\nPoder 2\n --> ");
+    scanf(" %[^\n]s", pok.poder2);//Coleta o poder 2 do pokémon.
+    printf("\nPoder 3\n --> ");
+    scanf(" %[^\n]s", pok.poder3);//Coleta o poder 3 do pokémon.
+    printf("\nPoder 4\n --> ");
+    scanf(" %[^\n]s", pok.poder4);//Coleta o poder 4 do pokémon.
+
+    return pok;
+}
+
+int main()
+{
+    char Sim[4] = {"Sim"};//Comparar digitação de aptidão.
+    char Nao[4] = {"Nao"};//Comparar digitação de aptidão.
+    char sim[4] = {"sim"};//Comparar digitação de aptidão.
+    char nao[4] = {"nao"};//Comparar digitação de aptidão.
+    int stat[152];//Indica se pokémon está cadastrado, excluido ou não foi cadastrado.
+    int exit = 1;//Exit = 1: programa roda. Exit = 0: programa fecha.
+    system("color 0f");//Adicionar cor. (usar color 0E)
+    setlocale(LC_ALL, "Portuguese");//Permitir acentos.
+    for(int i = 1; i <= 151; i++)//Stat: 0 = não há cadastro. 1 = há cadastro.
+    {
+        stat[i] = 0;
+    }
+    struct pokemon pkm[152];//Pkm guarda todos os 151 pokémon.
+    while(exit == 1)
+    {
+        switch(scan_menu())//Inicia menu e retorna char.
+        {
+        case '1'://CADASTRAR.
+            {
+            Sleep(150);//Permite visualizar a escolha.
+            char num_cad[4];//Número do pokémon a ser cadastrado.
+            system("cls");
+            printf("--------------------------------------------------------------------------------                                   CADASTRO                                  \n\n  Bem vindo ao cadastro! Aqui você pode armazenar todas as informaões importan- tes de seus Pokemons: seu número, seu nome, seu tipo, sua aptidão para batalhar e seus poderes. Digite (0) para voltar ao menu.\n\nQual pokémon será cadastro?\n\n--> ");
+            scanf(" %[^\n]s", num_cad);//Lê número do pokémon que será cadastrado.
+            if(num_cad[0] == '0' && num_cad[1] == '\0')//Voltar ao menu caso usuário digite 0;
+                continue;
+            while(atoi(num_cad) < 1 || atoi(num_cad) > 151 || stat[atoi(num_cad)] == 1)//Dígito inválido ou pokémon já cadastrado.
+            {
+                if(num_cad[0] == '0' && num_cad[1] == '\0')//Voltar para o menu.
+                    break;
+                system("cls");
+                if(stat[atoi(num_cad)] == 1)//Verifica e avisa ao usuário pokémon já cadastrado.
+                    printf("--------------------------------------------------------------------------------                                   CADASTRO                                  \n\n  Bem vindo ao cadastro! Aqui você pode armazenar todas as informaões importantes de seus Pokemons: seu número, seu nome, seu tipo, sua aptidão para batalhar e seus poderes. Digite (0) para voltar ao menu.\n\nQual pokémon será cadastrado?\n\nO pokémon de número %d ja está cadastrado. Para altera-lo por favor volte ao menu e digite a instrução de número (3).\nDigite um número.\n\n--> ", atoi(num_cad));
+                else//Aviso de dígito inválido.
+                    printf("--------------------------------------------------------------------------------                                   CADASTRO                                  \n\n  Bem vindo ao cadastro! Aqui você pode armazenar todas as informaões importantes de seus Pokemons: seu número, seu nome, seu tipo, sua aptidão para batalhar e seus poderes. Digite (0) para voltar ao menu.\n\nQual pokémon será cadastrado?\n\nDígito invalido, por favor digite outro.\n\n--> ");
+                scanf(" %[^\n]s", num_cad);
+            }
+            if(num_cad[0] == '0' && num_cad[1] == '\0')//Voltar para o menu.
+                continue;
+            pkm[atoi(num_cad)] = cadastro(atoi(num_cad));//Cadastra o pokémon na struct pkm em sua posição correspondente. Parâmetro para poder printar o número do pokémon dentro da função.
+            //Sleep(500);
+            stat[atoi(num_cad)] = 1;//Indica pokémon como cadastrado.
+            printf("\n\nO pokémon de número %d foi cadastrado com sucesso!\n\n\n", atoi(num_cad));
+            Sleep(250);
+            system("pause");
+            continue;
+            }
+        case '2'://CONSULTAR.
+            Sleep(150);
+            system("cls");
+            int num_con;//Número do pokémon a ser consultado.
+            printf("\nQual pokemon sera consultado?\n");
+            scanf("%d", &num_con);
+            print_pokemon(num_con);
+            if(strcmp(pkm[num_con].apto,sim) == 0 || strcmp(pkm[num_con].apto,Sim) == 0)//Checar qual a aptidão.
+                printf("Nome: %s\nTipo: %s\nAptidão: Sim\nPoder 1: %s\nPoder 2: %s\nPoder 3: %s\nPoder 4: %s\n",pkm[num_con].nome, pkm[num_con].tipo, pkm[num_con].poder1, pkm[num_con].poder2, pkm[num_con].poder3, pkm[num_con].poder4);
+            else//Printar "Não" acentuado.
+                printf("Nome: %s\nTipo: %s\nAptidão: Não\nPoder 1: %s\nPoder 2: %s\nPoder 3: %s\nPoder 4: %s\n",pkm[num_con].nome, pkm[num_con].tipo, pkm[num_con].poder1, pkm[num_con].poder2, pkm[num_con].poder3, pkm[num_con].poder4);
+            system("pause");
+            continue;
+        case '3'://ALTERAR.
+            printf("ALTERAR\n");
+            system("pause");
+            continue;
+        case '4'://EXCLUIR.
+            printf("EXCLUIR\n");
+            system("pause");
+            continue;
+        case '5'://FECHAR.
+            exit = 0;
+            continue;
+        }
+    }
+    return 0;
+}
